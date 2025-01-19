@@ -4,17 +4,23 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"time"
 )
 
 // Variables globales
 var (
-	opcion   int
-	cantidad float32 = 0.0
-	cuenta   float32
+	opcion        int
+	cantidad      float32 = 0.0
+	cuenta        float32
+	controlSalida bool = false
 )
 
 func main() {
-	menu()
+
+	for controlSalida == false {
+		menu()
+		LimpiarCOnsola()
+	}
 }
 
 // Menu principal del sistema
@@ -27,6 +33,7 @@ func menu() {
 	fmt.Println("I.   Ingresar dinero ")
 	fmt.Println("II.  Retirar dinero ")
 	fmt.Println("III. Consultar      ")
+	fmt.Println("IV.  Salir      ")
 	fmt.Print("Ingrese su opción: ")
 	//log.Println("Hora de ingreso")
 
@@ -36,10 +43,14 @@ func menu() {
 	case 1:
 		IngresarDinero()
 	case 2:
+
 		fmt.Println("two")
+		time.Sleep(4 * time.Second)
 	case 3:
 
 		ConsultarDinero()
+	case 4:
+		controlSalida = true
 	default:
 		fmt.Println("Número no valido")
 	}
@@ -47,18 +58,15 @@ func menu() {
 }
 
 func IngresarDinero() {
-
 	LimpiarCOnsola()
-
 	fmt.Println("\033[31m######################################\033[0m")
 	fmt.Println("\u001B[31m#              INGRESO               #\u001B[0m")
 	fmt.Println("\u001B[31m######################################\u001B[0m")
 	fmt.Println("                                      ")
 	fmt.Print("Ingrese la cantidad a ingresar: ")
 	fmt.Scan(&cantidad)
-
 	fmt.Println("\u001B[31mCantidad ingresada exitosamente\u001B[0m")
-	cuenta = cantidad
+	cuenta = cuenta + cantidad
 }
 
 func ConsultarDinero() {
@@ -68,6 +76,7 @@ func ConsultarDinero() {
 	fmt.Println("\u001B[31m######################################\u001B[0m")
 	fmt.Println("                                      ")
 	fmt.Println("Tienes ", cuenta, " €")
+	time.Sleep(4 * time.Second)
 }
 
 func LimpiarCOnsola() {
