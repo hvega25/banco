@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -17,6 +19,10 @@ var (
 
 func main() {
 
+	/*	El ciclo for simula ser un ciclo while
+		la variable controlSalida inicia siendo false y cuando el
+		usuario decide salir cambia a true
+	*/
 	for controlSalida == false {
 		menu()
 		LimpiarCOnsola()
@@ -25,7 +31,6 @@ func main() {
 
 // Menu principal del sistema
 func menu() {
-
 	fmt.Println("######################################")
 	fmt.Println("#                BANCO               #")
 	fmt.Println("######################################")
@@ -36,18 +41,15 @@ func menu() {
 	fmt.Println("IV.  Salir      ")
 	fmt.Print("Ingrese su opción: ")
 	//log.Println("Hora de ingreso")
-
 	//fmt.Scan() lee por consola lo que se escribe por teclado
 	fmt.Scan(&opcion)
 	switch opcion {
 	case 1:
 		IngresarDinero()
 	case 2:
-
 		fmt.Println("two")
 		time.Sleep(4 * time.Second)
 	case 3:
-
 		ConsultarDinero()
 	case 4:
 		controlSalida = true
@@ -71,19 +73,43 @@ func IngresarDinero() {
 
 func ConsultarDinero() {
 	LimpiarCOnsola()
+
+	/*	Usamos la libreria de bufio para poder leer en consola
+
+	 */
+	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("\033[31m######################################\033[0m")
 	fmt.Println("\u001B[31m#              CONSULTA              #\u001B[0m")
 	fmt.Println("\u001B[31m######################################\u001B[0m")
 	fmt.Println("                                      ")
 	fmt.Println("Tienes ", cuenta, " €")
-	time.Sleep(4 * time.Second)
+	fmt.Println("Presiona cualquier tecla para continuar")
+
+	scanner.Scan()
+	input := scanner.Text()
+
+	if input == "p" {
+		fmt.Println("Regresando al menu principal......")
+		time.Sleep(2 * time.Second)
+	}
+
 }
 
+/*
+Esta función es muy útil para tener la consola limpia
+tiene dos opciones dependiendo del sistema operativo
+*/
 func LimpiarCOnsola() {
-	var cmd *exec.Cmd
-	cmd = exec.Command("clear")
-	cmd.Stdout = os.Stdout
-	cmd.Run()
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/c", "cls")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	} else {
+		var cmd *exec.Cmd
+		cmd = exec.Command("clear")
+		cmd.Stdout = os.Stdout
+		cmd.Run()
+	}
 }
 
 /*
