@@ -12,12 +12,22 @@ import (
 // Variables globales
 var (
 	opcion        int
-	cantidad      float32 = 0.0
-	cuenta        float32
-	controlSalida bool = false
+	cantidad      int    = 0
+	cuenta        int    = 0
+	controlSalida bool   = false
+	nombre        string = "/data/bank.txt"
 )
 
 func main() {
+
+	/*
+		Verifica si hay archivo y abre uno
+	*/
+	if ExistText(nombre) == false {
+		f, err := os.Create(nombre)
+		check(err)
+
+	}
 
 	/*	El ciclo for simula ser un ciclo while
 		la variable controlSalida inicia siendo false y cuando el
@@ -27,6 +37,25 @@ func main() {
 		menu()
 		LimpiarCOnsola()
 	}
+
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+/*
+Creación del archivo para guardar datos
+*/
+func ExistText(nombre String) bool {
+	f, err := os.Open(nombre)
+	if err != nil {
+		return false
+	}
+	f.Close()
+	return true
 }
 
 // Menu principal del sistema
@@ -47,18 +76,23 @@ func menu() {
 	case 1:
 		IngresarDinero()
 	case 2:
-		fmt.Println("two")
+		RetirarDinero()
 		time.Sleep(4 * time.Second)
 	case 3:
 		ConsultarDinero()
 	case 4:
 		controlSalida = true
 	default:
-		fmt.Println("Número no valido")
+		fmt.Println("Tecla no válida")
+		fmt.Println("Ingrese de nuevo la opción")
+		time.Sleep(4 * time.Second)
 	}
 
 }
 
+/*
+Función que guarda o acumula la cantidad ingresada por el usuario
+*/
 func IngresarDinero() {
 	LimpiarCOnsola()
 	fmt.Println("\033[31m######################################\033[0m")
@@ -69,8 +103,31 @@ func IngresarDinero() {
 	fmt.Scan(&cantidad)
 	fmt.Println("\u001B[31mCantidad ingresada exitosamente\u001B[0m")
 	cuenta = cuenta + cantidad
+	f.writeFile(cuenta)
+	defer f.Close()
 }
 
+func RetirarDinero() {
+	LimpiarCOnsola()
+	fmt.Println("\033[31m######################################\033[0m")
+	fmt.Println("\u001B[31m#              Retirar               #\u001B[0m")
+	fmt.Println("\u001B[31m######################################\u001B[0m")
+	fmt.Println("                                      ")
+	fmt.Print("Ingrese la cantidad a retirar: ")
+	fmt.Scan(&cantidad)
+
+	if cantidad <= 0 || cantidad > cuenta {
+		fmt.Println("No puede retirar la cantidad indicada")
+		fmt.Println("Saliendo...")
+		time.Sleep(2 * time.Second)
+	} else {
+		cuenta = cuenta - cantidad
+		fmt.Println("Cantidad retirada con éxito")
+		fmt.Println("Saliendo...")
+		time.Sleep(2 * time.Second)
+	}
+
+}
 func ConsultarDinero() {
 	LimpiarCOnsola()
 
